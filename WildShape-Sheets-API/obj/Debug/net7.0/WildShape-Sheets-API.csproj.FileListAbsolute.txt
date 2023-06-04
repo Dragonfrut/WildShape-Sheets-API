@@ -44,3 +44,8 @@ C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\obj\
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\obj\Debug\net7.0\WildShape-Sheets-API.pdb
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\obj\Debug\net7.0\WildShape-Sheets-API.genruntimeconfig.cache
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\obj\Debug\net7.0\ref\WildShape-Sheets-API.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\AspNetCore.Identity.MongoDbCore.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.Extensions.Identity.Core.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\MongoDbGenericRepository.dll

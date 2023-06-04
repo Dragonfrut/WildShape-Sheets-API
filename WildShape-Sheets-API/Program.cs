@@ -1,14 +1,21 @@
+using Microsoft.Extensions.Options;
 using WildShape_Sheets_API.Models;
+using WildShape_Sheets_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(
+        options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.Configure<ClientDatabaseSetings>(builder.Configuration.GetSection("ClientDatabase"));
+builder.Services.Configure<WildshapeSheetsDBSettings>(
+    builder.Configuration.GetSection("WildshapeSheetsDB"));
+
+builder.Services.AddSingleton<UsersService>();
 
 var app = builder.Build();
 
