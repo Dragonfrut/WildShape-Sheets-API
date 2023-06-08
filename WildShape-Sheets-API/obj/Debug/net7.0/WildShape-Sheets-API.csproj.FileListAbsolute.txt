@@ -49,3 +49,12 @@ C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.Extensions.Identity.Core.dll
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\MongoDbGenericRepository.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.IdentityModel.Abstractions.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.IdentityModel.Logging.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
+C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
