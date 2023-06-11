@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.IdentityModel.Tokens.Jwt;
@@ -38,7 +37,14 @@ namespace WildShape_Sheets_API.Services
             const string secretKey = "Shared secret key that no one ever knew";
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Email,user.Email)
+            };
+
             var jwt = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddHours(4),
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
             );
 
