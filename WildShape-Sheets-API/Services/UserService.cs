@@ -10,7 +10,7 @@ namespace WildShape_Sheets_API.Services {
     public class UserService {
 
         private readonly IMongoCollection<User> users;
-        private readonly string key;
+        //private readonly string key;
 
         public UserService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration) {
             var mongoClient = new MongoClient(
@@ -22,7 +22,7 @@ namespace WildShape_Sheets_API.Services {
             users = mongoDatabase.GetCollection<User>(
                 wildshapeSheetsDBSettings.Value.UsersCollectionName);
 
-            this.key = configuration.GetSection("JwtKey").ToString();
+            //this.key = configuration.GetSection("JwtKey").ToString()!;
 
         }
 
@@ -36,34 +36,36 @@ namespace WildShape_Sheets_API.Services {
         }
 
 
-        public string Authenticate(string email, string password) {
+        //public string? Authenticate(string email, string password) {
+           
+        //    var user = users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
 
-            var user = users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
+        //    if (user == null)
+        //    {
+        //        return null;
+        //    }
 
-            if (user != null)
-                return null;
+        //    var tokenHandler = new JwtSecurityTokenHandler();
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+        //    var tokenKey = Encoding.ASCII.GetBytes(key);
 
-            var tokenKey = Encoding.ASCII.GetBytes(key);
+        //    var tokenDescriptor = new SecurityTokenDescriptor() {
+        //        Subject = new ClaimsIdentity(new Claim[]{
+        //            new Claim(ClaimTypes.Email, email),
+        //        }),
 
-            var tokenDescriptor = new SecurityTokenDescriptor() {
-                Subject = new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.Email, email),
-                }),
+        //        Expires = DateTime.UtcNow.AddHours(1),
 
-                Expires = DateTime.UtcNow.AddHours(1),
+        //        SigningCredentials = new SigningCredentials (
+        //            new SymmetricSecurityKey(tokenKey),
+        //            SecurityAlgorithms.HmacSha256Signature
+        //            )
+        //    };
 
-                SigningCredentials = new SigningCredentials (
-                    new SymmetricSecurityKey(tokenKey),
-                    SecurityAlgorithms.HmacSha256Signature
-                    )
-            };
+        //    var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
-        }
+        //    return tokenHandler.WriteToken(token);
+        //}
 
         //public async Task<List<User>> GetAsync() =>
         //    await _userCollection.Find(_ => true).ToListAsync();

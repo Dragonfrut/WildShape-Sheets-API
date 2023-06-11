@@ -16,33 +16,34 @@ namespace WildShape_Sheets_API.Controllers {
             userService = _userService;
 
         [HttpGet]
-        public ActionResult<List<User>> getUsers() {
+        public ActionResult<List<User>> GetUsers() {
             return userService.GetUsers();
         }
 
         [HttpGet("{id:length(24)}")]
-        public ActionResult<User> getUser(string id) {
+        public ActionResult<User> GetUser(string id) {
             var user = userService.GetUser(id);
             return Json(user);
         }
 
         [HttpPost]
-        public ActionResult<User> create(User user) {
+        public ActionResult<User> Create(User user) {
             userService.Create(user);
             return Json(user);
         }
 
-        [AllowAnonymous]
-        [Route("authenticate")]
-        [HttpPost]
-        public ActionResult Login([FromBody] User user) {
-            var token = userService.Authenticate(user.Email, user.Password);
+        //[AllowAnonymous]
+        //[Route("authenticate")]
+        //[HttpPost]
+        //public ActionResult Login([FromBody] User user) {
+            
+        //    var token = userService.Authenticate(user.Email, user.Password);
 
-            if (token == null)
-                return Unauthorized();
+        //    if (token == null)
+        //        return Unauthorized();
 
-            return Ok(new { token, user });
-        }
+        //    return Ok(new { token, user });
+        //}
 
         //[HttpGet]
         //public async Task<List<User>> Get() =>

@@ -19,20 +19,22 @@ builder.Services.Configure<WildshapeSheetsDBSettings>(
 
 builder.Services.AddSingleton<UserService>();
 
-builder.Services.AddAuthentication(x => {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(x => {
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtKey").ToString())),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
+builder.Services.AddSingleton<AuthService>();
+ 
+
+builder.Services.AddAuthentication()
+    .AddJwtBearer("JwtBearer", JwtBearerOptions =>
+    {
+        JwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Shared secret key that no one ever knew")),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false,
+        };
+    });
+
 
 var app = builder.Build();
 
@@ -44,9 +46,9 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
