@@ -1,4 +1,6 @@
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WildShape_Sheets_API.Models;
 using WildShape_Sheets_API.Services;
 
@@ -15,7 +17,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<WildshapeSheetsDBSettings>(
     builder.Configuration.GetSection("WildshapeSheetsDB"));
 
-builder.Services.AddSingleton<UsersService>();
+builder.Services.AddSingleton<UserService>();
+
+builder.Services.AddSingleton<AuthService>();
+ 
+
+builder.Services.AddAuthentication()
+    .AddJwtBearer("JwtBearer", JwtBearerOptions =>
+    {
+        JwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Shared secret key that no one ever knew")),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false,
+        };
+    });
+
 
 var app = builder.Build();
 
@@ -26,6 +45,8 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
