@@ -26,10 +26,16 @@ namespace WildShape_Sheets_API.Controllers {
             return Json(user);
         }
 
+        [AllowAnonymous]
         [HttpPost]
-        public ActionResult<User> Create(User user) {
-            userService.Create(user);
+        public ActionResult<User> CreateUser(User user) {
+            userService.CreateUser(user);
             return Json(user);
+        }
+
+        [HttpDelete("{id:length(24)}")]
+        public void DeleteUser(string id) {
+            userService.DeleteUser(id);
         }
 
         //[AllowAnonymous]

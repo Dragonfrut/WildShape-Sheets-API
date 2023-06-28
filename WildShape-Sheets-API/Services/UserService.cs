@@ -30,14 +30,16 @@ namespace WildShape_Sheets_API.Services {
 
         public User GetUser(string id) => users.Find(user => user.Id == id).FirstOrDefault();
 
-        public User Create(User user) {
+        public User CreateUser(User user) {
             users.InsertOne(user);
             return user;
         }
 
+        public void DeleteUser(string id) => users.DeleteOne(user => user.Id == id);
 
+        
         //public string? Authenticate(string email, string password) {
-           
+
         //    var user = users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
 
         //    if (user == null)

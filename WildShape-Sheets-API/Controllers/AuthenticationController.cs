@@ -22,6 +22,13 @@ namespace WildShape_Sheets_API.Controllers
 
             return Ok(new { token });
         }
+
+        [HttpPost]
+        public IActionResult Register([FromBody] RegisterDTO dto)
+        {
+
+            return Ok();
+        }
       
     }
 }
