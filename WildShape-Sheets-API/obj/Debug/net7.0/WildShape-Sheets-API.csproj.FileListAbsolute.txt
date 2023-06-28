@@ -179,3 +179,4 @@ C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\Wild
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\WildShape-Sheets-API\obj\Debug\net7.0\WildShape-Sheets-API.genruntimeconfig.cache
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\WildShape-Sheets-API\obj\Debug\net7.0\ref\WildShape-Sheets-API.dll
 C:\CodeRepos\ForgeHammer-Software\WildShape-Sheets-API\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\System.Web.Cors.dll
+D:\Git\forgehammer\back\WildShape-Sheets-API\WildShape-Sheets-API\bin\Debug\net7.0\System.Web.Cors.dll
