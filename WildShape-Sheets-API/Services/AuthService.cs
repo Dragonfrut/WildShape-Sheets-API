@@ -26,7 +26,7 @@ namespace WildShape_Sheets_API.Services
 
         public  string? Authenticate(string email, string password)
         {
-
+            Console.WriteLine("in authenticate");
             var user = users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
 
             if (user == null)

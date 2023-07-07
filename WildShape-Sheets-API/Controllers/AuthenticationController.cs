@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WildShape_Sheets_API.DTO;
 using WildShape_Sheets_API.Services;
 
@@ -13,9 +14,11 @@ namespace WildShape_Sheets_API.Controllers
         public AuthenticationController(AuthService _authService) =>
             AuthService = _authService;
 
+        [AllowAnonymous]
         [HttpPost]
-        public IActionResult Login([FromBody] LoginDto dto)
+        public ActionResult Login(LoginDto dto)
         {
+            Console.WriteLine("this is login");
             var token = AuthService.Authenticate(dto.Email, dto.Password);
             if (token == null)
                 return Unauthorized();
@@ -23,12 +26,11 @@ namespace WildShape_Sheets_API.Controllers
             return Ok(new { token });
         }
 
-        [HttpPost]
-        public IActionResult Register([FromBody] RegisterDTO dto)
-        {
+        //[HttpGet]
+        //public IActionResult Register([FromBody] LoginDto dto) {
+        //    Console.WriteLine("bruh");
+        //    return Ok();
+        //}
 
-            return Ok();
-        }
-      
     }
 }
