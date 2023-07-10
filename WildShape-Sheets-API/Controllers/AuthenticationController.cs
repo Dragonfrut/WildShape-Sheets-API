@@ -14,11 +14,10 @@ namespace WildShape_Sheets_API.Controllers
         public AuthenticationController(AuthService _authService) =>
             AuthService = _authService;
 
-        [AllowAnonymous]
+        
         [HttpPost]
         public ActionResult Login(LoginDto dto)
         {
-            Console.WriteLine("this is login");
             var token = AuthService.Authenticate(dto.Email, dto.Password);
             if (token == null)
                 return Unauthorized();
@@ -26,11 +25,7 @@ namespace WildShape_Sheets_API.Controllers
             return Ok(new { token });
         }
 
-        //[HttpGet]
-        //public IActionResult Register([FromBody] LoginDto dto) {
-        //    Console.WriteLine("bruh");
-        //    return Ok();
-        //}
+        
 
     }
 }

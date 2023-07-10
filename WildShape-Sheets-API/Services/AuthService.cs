@@ -11,8 +11,9 @@ namespace WildShape_Sheets_API.Services
     public class AuthService
     {
         private readonly IMongoCollection<User> users;
+        private readonly UserService userService;
 
-        public AuthService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration)
+        public AuthService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration, UserService _userService)
         {
             var mongoClient = new MongoClient(
                 wildshapeSheetsDBSettings.Value.ConnectionString);
@@ -22,11 +23,12 @@ namespace WildShape_Sheets_API.Services
 
             users = mongoDatabase.GetCollection<User>(
                 wildshapeSheetsDBSettings.Value.UsersCollectionName);
+
+            userService = _userService;
         }
 
         public  string? Authenticate(string email, string password)
         {
-            Console.WriteLine("in authenticate");
             var user = users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
 
             if (user == null)
@@ -50,6 +52,10 @@ namespace WildShape_Sheets_API.Services
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
 
+        }
+
+        public void Register() {
+            Console.WriteLine("register");
         }
     }
 }
