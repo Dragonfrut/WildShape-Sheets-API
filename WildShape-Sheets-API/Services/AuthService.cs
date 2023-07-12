@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using WildShape_Sheets_API.Models;
 
@@ -29,19 +30,22 @@ namespace WildShape_Sheets_API.Services
 
         public  string? Authenticate(string email, string password)
         {
-            var user = users.Find(user => user.Email == email && user.Password == password).FirstOrDefault();
 
-            if (user == null)
-            {
-                return null;
-            }
+            var user = users.Find(user => user.Email == email).FirstOrDefault();
 
+            if (user != null && user.Password != null && user.Salt != null) {
+                if (!userService.VerifyPassword(password, user.Password, user.Salt)) {
+                    // Password is valid, proceed with successful login
+                    Console.WriteLine("Login fail");
+                    return null;
+                }
+            } else { return null; }
             const string secretKey = "Shared secret key that no one ever knew";
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email,user.Email)
+                new Claim(ClaimTypes.Email, user.Email!)
             };
 
             var jwt = new JwtSecurityToken(
@@ -52,10 +56,6 @@ namespace WildShape_Sheets_API.Services
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
 
-        }
-
-        public void Register() {
-            Console.WriteLine("register");
         }
     }
 }
