@@ -20,8 +20,6 @@ namespace WildShape_Sheets_API.Models {
         [BsonElement("playerCharacters")]
         public PlayerCharacter[]? Characters { get; set; }
 
-        [BsonElement("hash")]
-        public string? Hash { get; set; }
         [BsonElement("salt")]
         public byte[]? Salt { get; set; }
 

@@ -34,12 +34,15 @@ namespace WildShape_Sheets_API.Services
             var user = users.Find(user => user.Email == email).FirstOrDefault();
 
             if (user != null && user.Password != null && user.Salt != null) {
-                if (!userService.VerifyPassword(password, user.Password, user.Salt)) {
+                if (userService.VerifyPassword(password, user.Password, user.Salt)) {
                     // Password is valid, proceed with successful login
-                    Console.WriteLine("Login fail");
+                    Console.WriteLine("Login valid");
+                } else {
+                    Console.WriteLine("Login invalid");
                     return null;
                 }
-            } else { return null; }
+            }
+
             const string secretKey = "Shared secret key that no one ever knew";
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
