@@ -11,10 +11,12 @@ namespace WildShape_Sheets_API.Services
 {
     public class AuthService
     {
-        private readonly IMongoCollection<User> users;
-        private readonly UserService userService;
+        private readonly IMongoCollection<User> _users;
+        private readonly UserService _userService;
+        private readonly IConfiguration _configuration;
+        private readonly string _secretKey;
 
-        public AuthService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration, UserService _userService)
+        public AuthService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration, UserService userService)
         {
             var mongoClient = new MongoClient(
                 wildshapeSheetsDBSettings.Value.ConnectionString);
@@ -22,19 +24,23 @@ namespace WildShape_Sheets_API.Services
             var mongoDatabase = mongoClient.GetDatabase(
                 wildshapeSheetsDBSettings.Value.DatabaseName);
 
-            users = mongoDatabase.GetCollection<User>(
+            _users = mongoDatabase.GetCollection<User>(
                 wildshapeSheetsDBSettings.Value.UsersCollectionName);
 
-            userService = _userService;
+            _configuration = configuration;
+
+            _userService = userService;
+
+            _secretKey = _configuration.GetSection("APIKeys:SecretKey").Value!;
         }
 
         public  string? Authenticate(string email, string password)
         {
 
-            var user = users.Find(user => user.Email == email).FirstOrDefault();
+            var user = _users.Find(user => user.Email == email).FirstOrDefault();
 
             if (user != null && user.Password != null && user.Salt != null) {
-                if (userService.VerifyPassword(password, user.Password, user.Salt)) {
+                if (_userService.VerifyPassword(password, user.Password, user.Salt)) {
                     // Password is valid, proceed with successful login
                     Console.WriteLine("Login valid");
                 } else {
@@ -43,9 +49,8 @@ namespace WildShape_Sheets_API.Services
                 }
             }
 
-            const string secretKey = "Shared secret key that no one ever knew";
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+            
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.Email!)
