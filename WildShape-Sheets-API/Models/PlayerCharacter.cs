@@ -8,9 +8,9 @@ namespace WildShape_Sheets_API.Models
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string? Id { get; set; }
         [BsonElement("name")]
-        public String? Name { get; set; }
+        public string? Name { get; set; }
 
-        [BsonElement("name")]
+        [BsonElement("level")]
         public int Level { get; set; }
 
         [BsonElement("user")]
