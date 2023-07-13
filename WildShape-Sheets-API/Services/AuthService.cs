@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using WildShape_Sheets_API.Models;
 
@@ -11,33 +10,29 @@ namespace WildShape_Sheets_API.Services
 {
     public class AuthService
     {
-        private readonly IMongoCollection<User> _users;
+        private readonly DataBaseService _dataBaseService;
+        private readonly AppSettings _appSettings;
         private readonly UserService _userService;
-        private readonly IConfiguration _configuration;
-        private readonly string _secretKey;
+        
 
-        public AuthService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration, UserService userService)
+        public AuthService(UserService userService, DataBaseService dataBaseService, AppSettings appSettings)
         {
-            var mongoClient = new MongoClient(
-                wildshapeSheetsDBSettings.Value.ConnectionString);
+            
 
-            var mongoDatabase = mongoClient.GetDatabase(
-                wildshapeSheetsDBSettings.Value.DatabaseName);
-
-            _users = mongoDatabase.GetCollection<User>(
-                wildshapeSheetsDBSettings.Value.UsersCollectionName);
-
-            _configuration = configuration;
-
+            _dataBaseService = dataBaseService;
+            
             _userService = userService;
 
-            _secretKey = _configuration.GetSection("APIKeys:SecretKey").Value!;
+            _appSettings = appSettings;
+
+            
         }
 
         public  string? Authenticate(string email, string password)
         {
 
-            var user = _users.Find(user => user.Email == email).FirstOrDefault();
+            
+            var user = _dataBaseService.userCollection.Find(user => user.Email == email).FirstOrDefault();
 
             if (user != null && user.Password != null && user.Salt != null) {
                 if (_userService.VerifyPassword(password, user.Password, user.Salt)) {
@@ -48,12 +43,13 @@ namespace WildShape_Sheets_API.Services
                     return null;
                 }
             }
-
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+            var secretKey = _appSettings.SecretKey;
+            Console.WriteLine($"Secret Key: {secretKey}");
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
             
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email, user.Email!)
+                new Claim(ClaimTypes.Email, user?.Email!)
             };
 
             var jwt = new JwtSecurityToken(

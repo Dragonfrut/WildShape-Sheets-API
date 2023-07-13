@@ -4,6 +4,14 @@ using System.Text;
 using WildShape_Sheets_API.Models;
 using WildShape_Sheets_API.Services;
 
+
+IConfiguration configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+var appSettings = new AppSettings(configuration);
+
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,12 +35,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.Configure<WildshapeSheetsDBSettings>(
     builder.Configuration.GetSection("WildshapeSheetsDB"));
 
+builder.Services.AddSingleton<AppSettings>();
+builder.Services.AddSingleton<DataBaseService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<PlayerCharacterService>();
 builder.Services.AddSingleton<AuthService>();
 
 
- 
+
+
 
 builder.Services.AddAuthentication()
     .AddJwtBearer("JwtBearer", JwtBearerOptions =>
@@ -55,6 +66,8 @@ var app = builder.Build();
 //    //app.UseSwagger();
 //    //app.UseSwaggerUI();
 //}
+
+
 
 
 

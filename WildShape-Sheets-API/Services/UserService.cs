@@ -11,21 +11,15 @@ using WildShape_Sheets_API.Models;
 namespace WildShape_Sheets_API.Services {
     public class UserService {
 
-        private readonly IMongoCollection<User> _users;
+        private readonly DataBaseService _dataBaseService;
         private readonly IConfiguration _configuration;
         private readonly int _keySize;
         private readonly int _iterations;
         HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
-        public UserService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration) {
-            var mongoClient = new MongoClient(
-                wildshapeSheetsDBSettings.Value.ConnectionString);
+        public UserService(IConfiguration configuration, DataBaseService dataBaseService) {
 
-            var mongoDatabase = mongoClient.GetDatabase(
-                wildshapeSheetsDBSettings.Value.DatabaseName);
-
-            _users = mongoDatabase.GetCollection<User>(
-                wildshapeSheetsDBSettings.Value.UsersCollectionName);
+            _dataBaseService = dataBaseService;
 
             _configuration = configuration;
 
@@ -34,18 +28,20 @@ namespace WildShape_Sheets_API.Services {
 
         }
 
-        public List<User> GetUsers() => _users.Find(user => true).ToList();
+        
 
-        public User GetUser(string id) => _users.Find(user => user.Id == id).FirstOrDefault();
+        public List<User> GetUsers() => _dataBaseService.userCollection.Find(user => true).ToList();
+
+        public User GetUser(string id) => _dataBaseService.userCollection.Find(user => user.Id == id).FirstOrDefault();
 
         public User CreateUser(User user) {
             user.Password = HashPassword(user.Password!, out var salt);
             user.Salt = salt;
-            _users.InsertOne(user);
+            _dataBaseService.userCollection.InsertOne(user);
             return user;
         }
 
-        public void DeleteUser(string id) => _users.DeleteOne(user => user.Id == id);
+        public void DeleteUser(string id) => _dataBaseService.userCollection.DeleteOne(user => user.Id == id);
 
         string HashPassword(string password, out byte[] salt) {
             salt = RandomNumberGenerator.GetBytes(_keySize);
