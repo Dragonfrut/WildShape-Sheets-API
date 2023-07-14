@@ -23,6 +23,7 @@ namespace WildShape_Sheets_API.Controllers
             if (token == null)
                 return Unauthorized();
 
+            Console.WriteLine(token.ToString());
             return Ok(new { token });
         }
 

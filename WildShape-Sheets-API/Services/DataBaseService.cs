@@ -13,7 +13,7 @@ namespace WildShape_Sheets_API.Services {
             _client = new MongoClient(wildshapeSheetsDBSettings.Value.ConnectionString);
             _database = _client.GetDatabase(wildshapeSheetsDBSettings.Value.DatabaseName);
             _users = _database.GetCollection<User>(wildshapeSheetsDBSettings.Value.UsersCollectionName);
-            _playerCharacters = _database.GetCollection<PlayerCharacter>(wildshapeSheetsDBSettings.Value.PlayerCharactersCollectionName);
+            //_playerCharacters = _database.GetCollection<PlayerCharacter>(wildshapeSheetsDBSettings.Value.PlayerCharactersCollectionName);
         }
 
         public IMongoCollection<User> userCollection => _users;
