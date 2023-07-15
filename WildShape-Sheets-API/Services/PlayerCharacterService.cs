@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using WildShape_Sheets_API.Models;
 
@@ -6,30 +7,26 @@ namespace WildShape_Sheets_API.Services
 {
     public class PlayerCharacterService
     {
-        private readonly IMongoCollection<PlayerCharacter> playerChars;
+        private readonly DataBaseService _dataBaseService;
+        private readonly IConfiguration _configuration;
 
-        public PlayerCharacterService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration)
+        public PlayerCharacterService(IConfiguration configuration, DataBaseService dataBaseService)
         {
-            var mongoClient = new MongoClient(
-                wildshapeSheetsDBSettings.Value.ConnectionString);
+            _dataBaseService = dataBaseService;
 
-            var mongoDatabase = mongoClient.GetDatabase(
-                wildshapeSheetsDBSettings.Value.DatabaseName);
-
-            playerChars = mongoDatabase.GetCollection<PlayerCharacter>(
-                wildshapeSheetsDBSettings.Value.PlayerCharactersCollectionName);
+            _configuration = configuration;
         }
 
-        public List<PlayerCharacter> GetPlayerCharacters() => playerChars.Find(pc => true).ToList();
+        public List<PlayerCharacter> GetPlayerCharacters() => _dataBaseService.playerCharacterCollection.Find(pc => true).ToList();
 
-        public PlayerCharacter GetPlayerCharacter(string id) => playerChars.Find(pc => pc.Id == id).FirstOrDefault();
+        public PlayerCharacter GetPlayerCharacter(string id) => _dataBaseService.playerCharacterCollection.Find(pc => pc.Id == id).FirstOrDefault();
 
         public PlayerCharacter CreatePlayerCharacter(User user, PlayerCharacter pc)
         {
             
             if(user.Characters?.Length > 2)
             {
-                playerChars.InsertOne(pc);
+                _dataBaseService.playerCharacterCollection.InsertOne(pc);
                 user.Characters.Append(pc).ToArray();
                 return pc;
             }
@@ -37,6 +34,6 @@ namespace WildShape_Sheets_API.Services
             return null;
         }
 
-        public void DeletePlayerCharacter(string id) => playerChars.DeleteOne(pc => pc.Id == id);
+        public void DeletePlayerCharacter(string id) => _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == id);
     }
 }

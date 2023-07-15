@@ -18,10 +18,12 @@ namespace WildShape_Sheets_API.Controllers
         [HttpPost]
         public ActionResult Login(LoginDto dto)
         {
+            Console.WriteLine($"email: {dto.Email} and password: {dto.Password}");
             var token = AuthService.Authenticate(dto.Email, dto.Password);
             if (token == null)
                 return Unauthorized();
 
+            Console.WriteLine(token.ToString());
             return Ok(new { token });
         }
 

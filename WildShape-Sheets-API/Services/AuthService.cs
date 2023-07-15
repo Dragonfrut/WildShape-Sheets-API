@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using WildShape_Sheets_API.Models;
 
@@ -11,30 +10,32 @@ namespace WildShape_Sheets_API.Services
 {
     public class AuthService
     {
-        private readonly IMongoCollection<User> users;
-        private readonly UserService userService;
+        private readonly DataBaseService _dataBaseService;
+        private readonly AppSettings _appSettings;
+        private readonly UserService _userService;
+        
 
-        public AuthService(IOptions<WildshapeSheetsDBSettings> wildshapeSheetsDBSettings, IConfiguration configuration, UserService _userService)
+        public AuthService(UserService userService, DataBaseService dataBaseService, AppSettings appSettings)
         {
-            var mongoClient = new MongoClient(
-                wildshapeSheetsDBSettings.Value.ConnectionString);
+            
 
-            var mongoDatabase = mongoClient.GetDatabase(
-                wildshapeSheetsDBSettings.Value.DatabaseName);
+            _dataBaseService = dataBaseService;
+            
+            _userService = userService;
 
-            users = mongoDatabase.GetCollection<User>(
-                wildshapeSheetsDBSettings.Value.UsersCollectionName);
+            _appSettings = appSettings;
 
-            userService = _userService;
+            
         }
 
         public  string? Authenticate(string email, string password)
         {
 
-            var user = users.Find(user => user.Email == email).FirstOrDefault();
+            
+            var user = _dataBaseService.userCollection.Find(user => user.Email == email).FirstOrDefault();
 
             if (user != null && user.Password != null && user.Salt != null) {
-                if (userService.VerifyPassword(password, user.Password, user.Salt)) {
+                if (_userService.VerifyPassword(password, user.Password, user.Salt)) {
                     // Password is valid, proceed with successful login
                     Console.WriteLine("Login valid");
                 } else {
@@ -42,13 +43,13 @@ namespace WildShape_Sheets_API.Services
                     return null;
                 }
             }
-
-            const string secretKey = "Shared secret key that no one ever knew";
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-
+            var secretKey = _appSettings.SecretKey;
+            Console.WriteLine($"Secret Key: {secretKey}");
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
+            
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email, user.Email!)
+                new Claim(ClaimTypes.Email, user?.Email!)
             };
 
             var jwt = new JwtSecurityToken(
