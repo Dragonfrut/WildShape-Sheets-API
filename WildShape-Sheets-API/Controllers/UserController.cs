@@ -22,7 +22,7 @@ namespace WildShape_Sheets_API.Controllers {
 
         [HttpGet("{id:length(24)}")]
         public ActionResult<User> GetUser(string id) {
-            var user = userService.GetUser(id);
+            var user = userService.GetUserById(id);
             return Json(user);
         }
 
