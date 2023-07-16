@@ -26,13 +26,16 @@ namespace WildShape_Sheets_API.Services
 
         public PlayerCharacter CreatePlayerCharacter(string userEmail, PlayerCharacter pc)
         {
-            
+            Console.WriteLine($"user email: {userEmail}");
             var user = _userService.GetUserByEmail(userEmail);
             Console.WriteLine($"array length: {user.Characters?.Count}");
-            if (user.Characters?.Count < 4) {
+            if (user.Characters?.Count <= 2) {
                 pc.User = user.Id;
                 _dataBaseService.playerCharacterCollection.InsertOne(pc);
                 user.Characters.Add(pc);
+                Console.WriteLine($"characters: {user.Characters[0]}");
+                Console.WriteLine($"array length: {user.Characters?.Count}");
+                _userService.UpdateUser(user.Id, user);
                 return pc;
             }
             Console.WriteLine("Characters are full");
