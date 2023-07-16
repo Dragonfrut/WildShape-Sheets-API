@@ -49,6 +49,10 @@ namespace WildShape_Sheets_API.Services {
             return user;
         }
 
+        //public User UpdateUser(User updatedUser) {
+        //    _dataBaseService.userCollection.FindOneAndReplace(user => user.Id = updatedUser.Id);
+        //}
+
         public void DeleteUser(string id) => _dataBaseService.userCollection.DeleteOne(user => user.Id == id);
 
         string HashPassword(string password, out byte[] salt) {

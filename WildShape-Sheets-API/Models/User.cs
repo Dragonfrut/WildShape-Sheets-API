@@ -18,7 +18,7 @@ namespace WildShape_Sheets_API.Models {
         public string? Email { get; set; }
 
         [BsonElement("playerCharacters")]
-        public PlayerCharacter[]? Characters { get; set; }
+        public List<PlayerCharacter>? Characters { get; set; }
 
         [BsonElement("salt")]
         public byte[]? Salt { get; set; }

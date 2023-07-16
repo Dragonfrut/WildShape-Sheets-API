@@ -28,12 +28,11 @@ namespace WildShape_Sheets_API.Services
         {
             
             var user = _userService.GetUserByEmail(userEmail);
-
-            if(user.Characters?.Length > 2)
-            {
+            Console.WriteLine($"array length: {user.Characters?.Count}");
+            if (user.Characters?.Count < 4) {
                 pc.User = user.Id;
                 _dataBaseService.playerCharacterCollection.InsertOne(pc);
-                user.Characters.Append(pc).ToArray();
+                user.Characters.Add(pc);
                 return pc;
             }
             Console.WriteLine("Characters are full");

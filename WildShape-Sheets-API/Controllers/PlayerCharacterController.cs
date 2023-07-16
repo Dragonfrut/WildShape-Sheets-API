@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WildShape_Sheets_API.DTO;
 using WildShape_Sheets_API.Models;
 using WildShape_Sheets_API.Services;
 
@@ -22,9 +23,9 @@ namespace WildShape_Sheets_API.Controllers {
         }
 
         [HttpPost]
-        public ActionResult<PlayerCharacter> CreatePlayerCharacter(string userEmail, PlayerCharacter playerCharacter) {
-            _playerCharacterService.CreatePlayerCharacter(userEmail, playerCharacter);
-            return Json(playerCharacter);
+        public ActionResult<PlayerCharacter> CreatePlayerCharacter(PlayerCharacterDto dto) {
+            var pc = _playerCharacterService.CreatePlayerCharacter(dto.Email, dto.PlayerCharacter);
+            return Json(pc);
         }
 
 
