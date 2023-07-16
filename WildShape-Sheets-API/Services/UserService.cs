@@ -36,7 +36,7 @@ namespace WildShape_Sheets_API.Services {
 
         public User GetUserByEmail(string email) => _dataBaseService.userCollection.Find(user => user.Email == email).FirstOrDefault();
 
-        public User CreateUser(User user) {
+        public User? CreateUser(User user) {
 
             var emailExist = VerifyEmailExists(user.Email);
             if (emailExist) {

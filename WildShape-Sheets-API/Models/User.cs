@@ -6,19 +6,19 @@ namespace WildShape_Sheets_API.Models {
 
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-        public string? Id { get; set; }
+        public required string Id { get; set; }
 
         [BsonElement("username")]
         public string? Username { get; set; }
 
         [BsonElement("password")]
-        public string? Password { get; set; }
+        public required string Password { get; set; }
 
         [BsonElement("email")]
-        public string? Email { get; set; }
+        public required string Email { get; set; }
 
         [BsonElement("playerCharacters")]
-        public List<PlayerCharacter>? Characters { get; set; } = new List<PlayerCharacter>();
+        public List<PlayerCharacter> Characters { get; set; } = new List<PlayerCharacter>();
 
         [BsonElement("salt")]
         public byte[]? Salt { get; set; }

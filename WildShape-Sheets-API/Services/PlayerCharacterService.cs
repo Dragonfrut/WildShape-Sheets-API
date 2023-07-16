@@ -22,19 +22,16 @@ namespace WildShape_Sheets_API.Services
 
         public List<PlayerCharacter> GetPlayerCharacters() => _dataBaseService.playerCharacterCollection.Find(pc => true).ToList();
 
-        public PlayerCharacter GetPlayerCharacter(string id) => _dataBaseService.playerCharacterCollection.Find(pc => pc.Id == id).FirstOrDefault();
+        public PlayerCharacter GetPlayerCharacterById(string id) => _dataBaseService.playerCharacterCollection.Find(pc => pc.Id == id).FirstOrDefault();
 
-        public PlayerCharacter CreatePlayerCharacter(string userEmail, PlayerCharacter pc)
+        public PlayerCharacter? CreatePlayerCharacter(string userEmail, PlayerCharacter pc)
         {
-            Console.WriteLine($"user email: {userEmail}");
             var user = _userService.GetUserByEmail(userEmail);
-            Console.WriteLine($"array length: {user.Characters?.Count}");
             if (user.Characters?.Count <= 2) {
                 pc.User = user.Id;
                 _dataBaseService.playerCharacterCollection.InsertOne(pc);
                 user.Characters.Add(pc);
-                Console.WriteLine($"characters: {user.Characters[0]}");
-                Console.WriteLine($"array length: {user.Characters?.Count}");
+                
                 _userService.UpdateUser(user.Id, user);
                 return pc;
             }
@@ -42,8 +39,14 @@ namespace WildShape_Sheets_API.Services
             return null;
         }
 
-        public void DeletePlayerCharacter(string id) => _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == id);
+        public void DeletePlayerCharacter(string id) {
+            var pc = GetPlayerCharacterById(id);
+            var user = _userService.GetUserById(pc.User!);
+            user.Characters.Remove(pc);
+            _userService.UpdateUser(user.Id, user);
 
-        
+            _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == pc.Id);
+
+        }
     }
 }

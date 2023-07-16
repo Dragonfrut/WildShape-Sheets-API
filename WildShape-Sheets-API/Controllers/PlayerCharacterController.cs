@@ -28,6 +28,10 @@ namespace WildShape_Sheets_API.Controllers {
             return Json(pc);
         }
 
+        [HttpDelete("{id:length(24)}")]
+        public void DeletePlayerCharacter(string id) {
+            _playerCharacterService.DeletePlayerCharacter(id);
+        }
 
     }
 }
