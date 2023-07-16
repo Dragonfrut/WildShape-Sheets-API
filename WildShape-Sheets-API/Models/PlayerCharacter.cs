@@ -13,7 +13,7 @@ namespace WildShape_Sheets_API.Models
         [BsonElement("level")]
         public int Level { get; set; }
 
-        //[BsonElement("user")]
-        //public User? User { get; set; }
+        [BsonElement("user")]
+        public string? User { get; set; }
     }
 }
