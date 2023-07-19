@@ -71,10 +71,7 @@ namespace WildShape_Sheets_API.Services {
         }
 
         public bool VerifyEmailExists(string email) {
-            var potentialUser = GetUserByEmail(email);
-            if (potentialUser != null) { 
-                return true; 
-            } else { return false; }
+            return GetUserByEmail(email) != null;
         }
     }
 }
