@@ -41,7 +41,10 @@ namespace WildShape_Sheets_API.Services
 
         public void DeletePlayerCharacter(string id) {
             var pc = GetPlayerCharacterById(id);
-            var user = _userService.GetUserById(pc.User!);
+
+            //var update = Builders<PlayerCharacter>.Update.PullFilter(user => user.)
+
+            var user = _userService.GetUserById(pc.User);
             user.Characters.Remove(pc);
             _userService.UpdateUser(user.Id, user);
 
