@@ -10,32 +10,32 @@ namespace WildShape_Sheets_API.Controllers {
     [ApiController]
     public class UserController : Controller {
 
-        private readonly UserService _userService;
+        private readonly UserService userService;
 
-        public UserController(UserService userService) =>
-            _userService = userService;
+        public UserController(UserService _userService) =>
+            userService = _userService;
 
         [HttpGet]
         public ActionResult<List<User>> GetUsers() {
-            return _userService.GetUsers();
+            return userService.GetUsers();
         }
 
         [HttpGet("{id:length(24)}")]
         public ActionResult<User> GetUser(string id) {
-            var user = _userService.GetUserById(id);
+            var user = userService.GetUserById(id);
             return Json(user);
         }
 
         [AllowAnonymous]
         [HttpPost]
         public ActionResult<User> CreateUser(User user) {
-            _userService.CreateUser(user);
+            userService.CreateUser(user);
             return Json(user);
         }
 
         [HttpDelete("{id:length(24)}")]
         public void DeleteUser(string id) {
-            _userService.DeleteUser(id);
+            userService.DeleteUser(id);
         }
 
         }

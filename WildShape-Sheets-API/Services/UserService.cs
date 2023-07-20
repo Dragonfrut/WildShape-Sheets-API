@@ -72,7 +72,7 @@ namespace WildShape_Sheets_API.Services {
         }
 
         public bool VerifyPassword(string password, string hash, byte[] salt) {
-
+           
             var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, _iterations, hashAlgorithm, _keySize);
             return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
         }
