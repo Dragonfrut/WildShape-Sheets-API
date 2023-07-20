@@ -27,7 +27,7 @@ namespace WildShape_Sheets_API.Services
         public PlayerCharacter? CreatePlayerCharacter(string userEmail, PlayerCharacter pc)
         {
             var user = _userService.GetUserByEmail(userEmail);
-            if (user.Characters?.Count <= 2) {
+            if (user.Characters?.Count <= 4) {
                 pc.User = user.Id;
                 _dataBaseService.playerCharacterCollection.InsertOne(pc);
                 user.Characters.Add(pc);
@@ -42,12 +42,9 @@ namespace WildShape_Sheets_API.Services
         public void DeletePlayerCharacter(string id) {
             var pc = GetPlayerCharacterById(id);
 
-            //var update = Builders<PlayerCharacter>.Update.PullFilter(user => user.)
-
-            var user = _userService.GetUserById(pc.User);
-            user.Characters.Remove(pc);
-            _userService.UpdateUser(user.Id, user);
-
+            var filter = Builders<User>.Filter.ElemMatch(user => user.Characters, nestedPc => nestedPc.Id == id);
+            var update = Builders<User>.Update.PullFilter(user => user.Characters, pc => pc.Id == id);
+            _dataBaseService.userCollection.UpdateOne(filter, update);
             _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == pc.Id);
 
         }
