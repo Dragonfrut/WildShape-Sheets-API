@@ -36,7 +36,7 @@ namespace WildShape_Sheets_API.Services {
 
         public User GetUserByEmail(string email) => _dataBaseService.userCollection.Find(user => user.Email == email).FirstOrDefault();
 
-        public User CreateUser(User user) {
+        public User? CreateUser(User user) {
 
             var emailExist = VerifyEmailExists(user.Email);
             if (emailExist) {
@@ -47,6 +47,13 @@ namespace WildShape_Sheets_API.Services {
             user.Salt = salt;
             _dataBaseService.userCollection.InsertOne(user);
             return user;
+        }
+
+        public ReplaceOneResult UpdateUser(string id, User updatedUser) {
+
+            var filter = Builders<User>.Filter.Eq(user => user.Id, id);
+            
+            return _dataBaseService.userCollection.ReplaceOne(filter, updatedUser);
         }
 
         public void DeleteUser(string id) => _dataBaseService.userCollection.DeleteOne(user => user.Id == id);
@@ -65,7 +72,7 @@ namespace WildShape_Sheets_API.Services {
         }
 
         public bool VerifyPassword(string password, string hash, byte[] salt) {
-
+           
             var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, _iterations, hashAlgorithm, _keySize);
             return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
         }
