@@ -23,7 +23,6 @@ namespace WildShape_Sheets_API.Services
         public List<PlayerCharacter> GetPlayerCharacters() => _dataBaseService.playerCharacterCollection.Find(pc => true).ToList();
 
         public List<PlayerCharacter> GetUsersPlayerCharacters(string email) {
-            Console.WriteLine("this is user player get");
             var user = _userService.GetUserByEmail(email);
             return user.Characters;
         }
