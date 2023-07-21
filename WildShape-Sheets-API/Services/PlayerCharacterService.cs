@@ -22,6 +22,12 @@ namespace WildShape_Sheets_API.Services
 
         public List<PlayerCharacter> GetPlayerCharacters() => _dataBaseService.playerCharacterCollection.Find(pc => true).ToList();
 
+        public List<PlayerCharacter> GetUsersPlayerCharacters(string email) {
+            Console.WriteLine("this is user player get");
+            var user = _userService.GetUserByEmail(email);
+            return user.Characters;
+        }
+
         public PlayerCharacter GetPlayerCharacterById(string id) => _dataBaseService.playerCharacterCollection.Find(pc => pc.Id == id).FirstOrDefault();
 
         public PlayerCharacter? CreatePlayerCharacter(string userEmail, PlayerCharacter pc)
@@ -48,5 +54,7 @@ namespace WildShape_Sheets_API.Services
             _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == pc.Id);
 
         }
+
+        
     }
 }
