@@ -20,7 +20,7 @@ namespace WildShape_Sheets_API.Controllers
         {
             Console.WriteLine($"email: {dto.Email} and password: {dto.Password}");
             var token = AuthService.Authenticate(dto.Email, dto.Password);
-            if (token == (null,null))
+            if (token == null)
                 return Unauthorized();
 
             Console.WriteLine(token.ToString());
