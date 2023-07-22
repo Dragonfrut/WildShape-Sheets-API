@@ -37,6 +37,7 @@ builder.Services.AddSingleton<DataBaseService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<PlayerCharacterService>();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<TokenService>();
 
 IConfiguration configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
