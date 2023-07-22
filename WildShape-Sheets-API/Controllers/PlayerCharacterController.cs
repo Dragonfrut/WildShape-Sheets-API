@@ -22,6 +22,11 @@ namespace WildShape_Sheets_API.Controllers {
             return _playerCharacterService.GetPlayerCharacters();
         }
 
+        [HttpGet("{email}")]
+        public ActionResult<List<PlayerCharacter>> GetUsersCharacters(string email) {
+            return _playerCharacterService.GetUsersPlayerCharacters(email);
+        }
+
         [HttpPost]
         public ActionResult<PlayerCharacter> CreatePlayerCharacter(PlayerCharacterDto dto) {
             var pc = _playerCharacterService.CreatePlayerCharacter(dto.Email, dto.PlayerCharacter);

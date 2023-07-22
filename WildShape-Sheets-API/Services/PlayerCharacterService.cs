@@ -22,6 +22,11 @@ namespace WildShape_Sheets_API.Services
 
         public List<PlayerCharacter> GetPlayerCharacters() => _dataBaseService.playerCharacterCollection.Find(pc => true).ToList();
 
+        public List<PlayerCharacter> GetUsersPlayerCharacters(string email) {
+            var user = _userService.GetUserByEmail(email);
+            return user.Characters;
+        }
+
         public PlayerCharacter GetPlayerCharacterById(string id) => _dataBaseService.playerCharacterCollection.Find(pc => pc.Id == id).FirstOrDefault();
 
         public PlayerCharacter? CreatePlayerCharacter(string userEmail, PlayerCharacter pc)
@@ -45,8 +50,10 @@ namespace WildShape_Sheets_API.Services
             var filter = Builders<User>.Filter.ElemMatch(user => user.Characters, nestedPc => nestedPc.Id == id);
             var update = Builders<User>.Update.PullFilter(user => user.Characters, pc => pc.Id == id);
             _dataBaseService.userCollection.UpdateOne(filter, update);
-            _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == pc.Id);
+            _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == id);
 
         }
+
+        
     }
 }
