@@ -11,6 +11,7 @@ namespace WildShape_Sheets_API.Services {
     public class TokenService {
         private readonly DataBaseService _dataBaseService;
         private readonly AppSettings _appSettings;
+        private const int AccessTokenExpiration = 15;
 
         public TokenService(DataBaseService dataBaseService, AppSettings appSettings) {
             _dataBaseService = dataBaseService;
@@ -29,18 +30,27 @@ namespace WildShape_Sheets_API.Services {
 
             var jwt = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(5),
+                expires: DateTime.UtcNow.AddMinutes(AccessTokenExpiration),
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
             );
 
             return jwt;
         }
 
-        internal string GenerateRefreshToken() {
+        internal string GenerateRefreshToken(int expirationMinutes, User user) {
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create()) {
                 rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
+                string refreshToken = Convert.ToBase64String(randomNumber);
+           
+                var expirationTime = DateTime.UtcNow.AddMinutes(expirationMinutes);
+
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenExpiration = expirationTime;
+
+                _dataBaseService.userCollection.ReplaceOne(u => u.Id == user.Id, user);
+
+                return refreshToken;
             }
         }
 
@@ -51,7 +61,9 @@ namespace WildShape_Sheets_API.Services {
                 return null;
             }
 
-            //TODO Check if the refresh token has expired, and handle accordingly (e.g., return null or throw an exception)
+            if (user.RefreshTokenExpiration <= DateTime.UtcNow) {
+                return null; 
+            }
 
             JwtSecurityToken jwt = GenerateAccessToken(user);
             string accessToken = new JwtSecurityTokenHandler().WriteToken(jwt);

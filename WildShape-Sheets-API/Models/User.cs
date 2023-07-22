@@ -26,5 +26,7 @@ namespace WildShape_Sheets_API.Models {
         [BsonElement("refreshToken")]
         public string? RefreshToken { get; set; }
 
+        [BsonElement("refreshTokenExpiration")]
+        public DateTime RefreshTokenExpiration { get; internal set; }
     }
 }

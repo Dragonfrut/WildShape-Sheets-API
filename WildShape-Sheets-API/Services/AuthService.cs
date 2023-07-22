@@ -16,6 +16,7 @@ namespace WildShape_Sheets_API.Services
         private readonly DataBaseService _dataBaseService;
         private readonly UserService _userService;
         private readonly TokenService _tokenService;
+        private const int RefreshTokenExpiration = 60 * 12;
         
 
         public AuthService(UserService userService, DataBaseService dataBaseService, TokenService tokenService)
@@ -40,10 +41,10 @@ namespace WildShape_Sheets_API.Services
 
             JwtSecurityToken jwt = _tokenService.GenerateAccessToken(user);
             string accessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
-            string refreshToken = _tokenService.GenerateRefreshToken();
+            string refreshToken = _tokenService.GenerateRefreshToken(RefreshTokenExpiration, user);
 
-            user.RefreshToken = refreshToken;
-            _dataBaseService.userCollection.ReplaceOne(u => u.Id == user.Id, user);
+            //user.RefreshToken = refreshToken;
+            //_dataBaseService.userCollection.ReplaceOne(u => u.Id == user.Id, user);
 
             var authTokens = new AuthTokens {
                 AccessToken = accessToken,
@@ -52,9 +53,5 @@ namespace WildShape_Sheets_API.Services
 
             return JsonSerializer.Serialize(authTokens);
         }
-
-        
-        
-
     }
 }
