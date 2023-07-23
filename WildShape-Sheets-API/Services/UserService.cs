@@ -50,13 +50,14 @@ namespace WildShape_Sheets_API.Services {
             return user;
         }
 
-        public ReplaceOneResult UpdateUser(string id, User updatedUser) {
 
-            var filter = Builders<User>.Filter.Eq(user => user.Id, id);
-            
+        public ReplaceOneResult UpdateUser(User updatedUser)
+        {
+
+            var filter = Builders<User>.Filter.Eq(user => user.Id, updatedUser.Id);
+
             return _dataBaseService.userCollection.ReplaceOne(filter, updatedUser);
         }
-
         public void DeleteUser(string id) => _dataBaseService.userCollection.DeleteOne(user => user.Id == id);
 
         public void SetPassword(User user) {

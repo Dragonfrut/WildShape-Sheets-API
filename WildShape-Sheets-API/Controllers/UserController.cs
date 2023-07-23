@@ -16,11 +16,13 @@ namespace WildShape_Sheets_API.Controllers {
 
         private readonly UserService userService;
         private readonly EmailService emailService;
+        private readonly HashService hashService;
 
-        public UserController(UserService _userService, EmailService _emailService)
+        public UserController(UserService _userService, EmailService _emailService, HashService _hashService)
         {
             userService = _userService;
             emailService = _emailService;
+            hashService = _hashService;
         }
 
         [HttpGet]
@@ -44,28 +46,6 @@ namespace WildShape_Sheets_API.Controllers {
         [HttpDelete("{id:length(24)}")]
         public void DeleteUser(string id) {
             userService.DeleteUser(id);
-        }
-
-        public class SHA256Example
-        {
-            public static string ComputeSHA256Hash(string input)
-            {
-                using (SHA256 sha256 = SHA256.Create())
-                {
-                    // Convert the input string to a byte array and compute the hash.
-                    byte[] inputBytes = Encoding.UTF8.GetBytes(input);
-                    byte[] hashBytes = sha256.ComputeHash(inputBytes);
-
-                    // Convert the byte array to a hexadecimal string.
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < hashBytes.Length; i++)
-                    {
-                        sb.Append(hashBytes[i].ToString("x2"));
-                    }
-
-                    return sb.ToString();
-                }
-            }
         }
 
         public class PasswordResetRequest
@@ -93,13 +73,20 @@ namespace WildShape_Sheets_API.Controllers {
             string body = "Hello password reset. This is the email body.";
 
             // Send the email using the email service
-            // emailService.SendPasswordResetEmail(passwordReset.email, subject, body);
-            string hashResult = SHA256Example.ComputeSHA256Hash(user.Password);
+            emailService.SendPasswordResetEmail(passwordReset.email, subject, body);
+            string passwordResetToken = hashService.GetSHA256Hash(user.Password);
 
             Console.WriteLine("Send the email");
-            Console.WriteLine(hashResult);
+            Console.WriteLine(passwordResetToken);
 
-            return Ok();
+            // Create a response object with the hashResult (this is temporary for testing until email is working)
+            var responseObj = new
+            {
+                message = "Pretend email sent successfully.",
+                token = passwordResetToken
+            };
+
+            return Ok(responseObj);
 
         }
         public class PasswordUpdateRequest
@@ -128,13 +115,16 @@ namespace WildShape_Sheets_API.Controllers {
                 return BadRequest(new { message = "User password is null" });
             }
 
-            string hashResult = SHA256Example.ComputeSHA256Hash(user.Password);
+            string hashResult = hashService.GetSHA256Hash(user.Password);
             if (hashResult != passwordUpdate.token)
             {
                 Console.WriteLine("no token matchy");
                 return BadRequest(new { message = "Invalid token" });
             }
             Console.WriteLine("We have a good token and pass, update away!");
+            user.Password = passwordUpdate.password;
+            userService.SetPassword(user);
+            userService.UpdateUser(user);
             return Ok();
         }
     }

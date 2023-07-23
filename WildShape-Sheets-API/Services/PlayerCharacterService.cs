@@ -37,7 +37,7 @@ namespace WildShape_Sheets_API.Services
                 _dataBaseService.playerCharacterCollection.InsertOne(pc);
                 user.Characters.Add(pc);
                 
-                _userService.UpdateUser(user.Id, user);
+                _userService.UpdateUser(user);
                 return pc;
             }
             Console.WriteLine("Characters are full");
