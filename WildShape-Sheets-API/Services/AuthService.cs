@@ -13,19 +13,15 @@ namespace WildShape_Sheets_API.Services
         private readonly DataBaseService _dataBaseService;
         private readonly AppSettings _appSettings;
         private readonly UserService _userService;
+        private readonly HashService _hashService;
         
 
-        public AuthService(UserService userService, DataBaseService dataBaseService, AppSettings appSettings)
+        public AuthService(UserService userService, DataBaseService dataBaseService, AppSettings appSettings, HashService hashService)
         {
-            
-
             _dataBaseService = dataBaseService;
-            
             _userService = userService;
-
             _appSettings = appSettings;
-
-            
+            _hashService = hashService;  
         }
 
         public  string? Authenticate(string email, string password)
@@ -35,7 +31,7 @@ namespace WildShape_Sheets_API.Services
             var user = _dataBaseService.userCollection.Find(user => user.Email == email).FirstOrDefault();
 
             if (user != null && user.Password != null && user.Salt != null) {
-                if (_userService.VerifyPassword(password, user.Password, user.Salt)) {
+                if (_hashService.VerifyPasswordHash(password, user.Password, user.Salt)) {
                     // Password is valid, proceed with successful login
                     Console.WriteLine("Login valid");
                 } else {
