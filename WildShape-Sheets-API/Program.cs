@@ -1,3 +1,4 @@
+using MailKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -34,6 +35,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSingleton<AppSettings>();
 builder.Services.AddSingleton<DataBaseService>();
+builder.Services.AddSingleton<EmailService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<PlayerCharacterService>();
 builder.Services.AddSingleton<AuthService>();
