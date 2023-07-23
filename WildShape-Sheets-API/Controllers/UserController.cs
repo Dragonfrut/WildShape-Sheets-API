@@ -2,10 +2,6 @@
 using WildShape_Sheets_API.Models;
 using WildShape_Sheets_API.Services;
 using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Security.Cryptography;
-using System.Text;
-using AspNetCore.Identity.MongoDbCore.Models;
 
 namespace WildShape_Sheets_API.Controllers {
 
