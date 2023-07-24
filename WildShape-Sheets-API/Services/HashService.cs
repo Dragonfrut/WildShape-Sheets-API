@@ -37,24 +37,5 @@ namespace WildShape_Sheets_API.Services {
             var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, _iterations, hashAlgorithm, _keySize);
             return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
         }
-        public string GetSHA256Hash(string input)
-        {
-            //ComputeSHA256Hash
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                // Convert the input string to a byte array and compute the hash.
-                byte[] inputBytes = Encoding.UTF8.GetBytes(input);
-                byte[] hashBytes = sha256.ComputeHash(inputBytes);
-
-                // Convert the byte array to a hexadecimal string.
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hashBytes.Length; i++)
-                {
-                    sb.Append(hashBytes[i].ToString("x2"));
-                }
-
-                return sb.ToString();
-            }
-        }
     }
 }
