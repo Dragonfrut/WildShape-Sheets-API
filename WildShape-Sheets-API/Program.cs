@@ -34,9 +34,11 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSingleton<AppSettings>();
 builder.Services.AddSingleton<DataBaseService>();
+builder.Services.AddSingleton<EmailService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<PlayerCharacterService>();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<HashService>();
 
 IConfiguration configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
