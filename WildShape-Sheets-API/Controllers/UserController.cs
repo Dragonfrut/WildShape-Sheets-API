@@ -2,6 +2,7 @@
 using WildShape_Sheets_API.Models;
 using WildShape_Sheets_API.Services;
 using Microsoft.AspNetCore.Authorization;
+using WildShape_Sheets_API.DTO;
 
 namespace WildShape_Sheets_API.Controllers {
 
@@ -10,38 +11,38 @@ namespace WildShape_Sheets_API.Controllers {
     [ApiController]
     public class UserController : Controller {
 
-        private readonly UserService userService;
-        private readonly EmailService emailService;
-        private readonly HashService hashService;
+        private readonly UserService _userService;
+        private readonly EmailService _emailService;
+        private readonly HashService _hashService;
 
-        public UserController(UserService _userService, EmailService _emailService, HashService _hashService)
+        public UserController(UserService userService, EmailService emailService, HashService hashService)
         {
-            userService = _userService;
-            emailService = _emailService;
-            hashService = _hashService;
+            _userService = userService;
+            _emailService = emailService;
+            _hashService = hashService;
         }
 
         [HttpGet]
         public ActionResult<List<User>> GetUsers() {
-            return userService.GetUsers();
+            return _userService.GetUsers();
         }
 
         [HttpGet("{id:length(24)}")]
         public ActionResult<User> GetUser(string id) {
-            var user = userService.GetUserById(id);
+            var user = _userService.GetUserById(id);
             return Json(user);
         }
 
         [AllowAnonymous]
         [HttpPost]
         public ActionResult<User> CreateUser(User user) {
-            userService.CreateUser(user);
+            _userService.CreateUser(user);
             return Json(user);
         }
 
         [HttpDelete("{id:length(24)}")]
         public void DeleteUser(string id) {
-            userService.DeleteUser(id);
+            _userService.DeleteUser(id);
         }
 
         public class PasswordResetRequest
@@ -58,7 +59,7 @@ namespace WildShape_Sheets_API.Controllers {
         [Route("password/reset")]
         public ActionResult PasswordReset([FromBody] PasswordResetRequest passwordReset)
         {
-            var user = userService.GetUserByEmail(passwordReset.email);
+            var user = _userService.GetUserByEmail(passwordReset.email);
             if (user == null)
             {
                 return BadRequest(new { message = "Email not found" });
@@ -69,8 +70,8 @@ namespace WildShape_Sheets_API.Controllers {
             string body = "Hello password reset. This is the email body.";
 
             // Send the email using the email service
-            emailService.SendPasswordResetEmail(passwordReset.email, subject, body);
-            string passwordResetToken = hashService.GetSHA256Hash(user.Password);
+            _emailService.SendPasswordResetEmail(passwordReset.email, subject, body);
+            string passwordResetToken = _hashService.GetSHA256Hash(user.Password);
 
             Console.WriteLine("Send the email");
             Console.WriteLine(passwordResetToken);
@@ -85,20 +86,20 @@ namespace WildShape_Sheets_API.Controllers {
             return Ok(responseObj);
 
         }
-        public class PasswordUpdateRequest
-        {
-            public string email { get; set; }
-            public string token { get; set; }
-            public string password { get; set; }
-        }
+        //public class PasswordUpdateRequest
+        //{
+        //    public string email { get; set; }
+        //    public string token { get; set; }
+        //    public string password { get; set; }
+        //}
 
         [AllowAnonymous]
         [HttpPost]
         [Route("password/update")]
-        public ActionResult PasswordUpdate([FromBody] PasswordUpdateRequest passwordUpdate)
+        public ActionResult PasswordUpdate([FromBody] PasswordUpdateRequestDto passwordUpdate)
         {
             Console.WriteLine("process password udpate");
-            var user = userService.GetUserByEmail(passwordUpdate.email);
+            var user = _userService.GetUserByEmail(passwordUpdate.email);
             if (user == null)
             {
                 return BadRequest(new { message = "Email not found" });
@@ -111,7 +112,7 @@ namespace WildShape_Sheets_API.Controllers {
                 return BadRequest(new { message = "User password is null" });
             }
 
-            string hashResult = hashService.GetSHA256Hash(user.Password);
+            string hashResult = _hashService.GetSHA256Hash(user.Password);
             if (hashResult != passwordUpdate.token)
             {
                 Console.WriteLine("no token matchy");
@@ -119,8 +120,8 @@ namespace WildShape_Sheets_API.Controllers {
             }
             Console.WriteLine("We have a good token and pass, update away!");
             user.Password = passwordUpdate.password;
-            userService.SetPassword(user);
-            userService.UpdateUser(user);
+            _userService.SetPassword(user);
+            _userService.UpdateUser(user);
             return Ok();
         }
     }
