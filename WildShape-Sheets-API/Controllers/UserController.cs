@@ -9,16 +9,17 @@ namespace WildShape_Sheets_API.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : Controller {
-
+        private readonly IConfiguration configuration;
         private readonly UserService userService;
         private readonly EmailService emailService;
         private readonly HashService hashService;
 
-        public UserController(UserService _userService, EmailService _emailService, HashService _hashService)
+        public UserController(UserService _userService, EmailService _emailService, HashService _hashService, IConfiguration _configuration)
         {
             userService = _userService;
             emailService = _emailService;
             hashService = _hashService;
+            configuration = _configuration ?? throw new ArgumentNullException(nameof(_configuration));
         }
 
         [HttpGet]
@@ -66,23 +67,13 @@ namespace WildShape_Sheets_API.Controllers {
 
             // Prepare the email subject and body
             string subject = "Password Reset Request";
-            string body = "Hello password reset. This is the email body.";
+            string passwordResetToken = hashService.GetSHA256Hash(user.Password);
+            string frontEndUrl = configuration["URLs:Frontend"];
+            string body = String.Format("To reset you password please follow <a href=\"{0}?token={1}\">this link</a>", frontEndUrl, passwordResetToken);
 
             // Send the email using the email service
             emailService.SendPasswordResetEmail(passwordReset.email, subject, body);
-            string passwordResetToken = hashService.GetSHA256Hash(user.Password);
-
-            Console.WriteLine("Send the email");
-            Console.WriteLine(passwordResetToken);
-
-            // Create a response object with the hashResult (this is temporary for testing until email is working)
-            var responseObj = new
-            {
-                message = "Pretend email sent successfully.",
-                token = passwordResetToken
-            };
-
-            return Ok(responseObj);
+            return Ok();
 
         }
         public class PasswordUpdateRequest
