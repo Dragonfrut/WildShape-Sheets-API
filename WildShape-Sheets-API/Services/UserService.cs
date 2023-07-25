@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using System.Diagnostics.Contracts;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -13,18 +14,19 @@ namespace WildShape_Sheets_API.Services {
 
         private readonly DataBaseService _dataBaseService;
         private readonly IConfiguration _configuration;
-        private readonly int _keySize;
-        private readonly int _iterations;
-        HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
+        private readonly HashService _hashService;
+        //private readonly int _keySize;
+        //private readonly int _iterations;
+        //HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
-        public UserService(IConfiguration configuration, DataBaseService dataBaseService) {
+        public UserService(IConfiguration configuration, DataBaseService dataBaseService, HashService hashService) {
 
             _dataBaseService = dataBaseService;
-
             _configuration = configuration;
+            _hashService = hashService;
 
-            _keySize = int.Parse(_configuration.GetSection("Hashbrowns:KeySize").Value!);
-            _iterations = int.Parse(_configuration.GetSection("Hashbrowns:Iterations").Value!);
+            //_keySize = int.Parse(_configuration.GetSection("Hashbrowns:KeySize").Value!);
+            //_iterations = int.Parse(_configuration.GetSection("Hashbrowns:Iterations").Value!);
 
         }
 
@@ -43,39 +45,27 @@ namespace WildShape_Sheets_API.Services {
                 Console.WriteLine("User exists with used email");
                 return null;
             }
-            user.Password = HashPassword(user.Password!, out var salt);
-            user.Salt = salt;
+            SetPassword(user);
             _dataBaseService.userCollection.InsertOne(user);
             return user;
         }
 
-        public ReplaceOneResult UpdateUser(string id, User updatedUser) {
 
-            var filter = Builders<User>.Filter.Eq(user => user.Id, id);
-            
+        public ReplaceOneResult UpdateUser(User updatedUser)
+        {
+
+            var filter = Builders<User>.Filter.Eq(user => user.Id, updatedUser.Id);
+
             return _dataBaseService.userCollection.ReplaceOne(filter, updatedUser);
         }
-
         public void DeleteUser(string id) => _dataBaseService.userCollection.DeleteOne(user => user.Id == id);
 
-        string HashPassword(string password, out byte[] salt) {
-            salt = RandomNumberGenerator.GetBytes(_keySize);
-
-            var hash = Rfc2898DeriveBytes.Pbkdf2(
-                Encoding.UTF8.GetBytes(password),
-                salt,
-                _iterations,
-                hashAlgorithm,
-                _keySize);
-
-            return Convert.ToHexString(hash);
+        public void SetPassword(User user) {
+            user.Password = _hashService.HashPassword(user.Password, out var salt);
+            user.Salt = salt;
         }
 
-        public bool VerifyPassword(string password, string hash, byte[] salt) {
-           
-            var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, salt, _iterations, hashAlgorithm, _keySize);
-            return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
-        }
+        
 
         public bool VerifyEmailExists(string email) {
             return GetUserByEmail(email) != null;

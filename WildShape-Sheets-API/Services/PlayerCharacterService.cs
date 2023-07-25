@@ -39,7 +39,7 @@ namespace WildShape_Sheets_API.Services
                 _dataBaseService.playerCharacterCollection.InsertOne(pc);
                 user.Characters.Add(pc);
                 
-                _userService.UpdateUser(user.Id, user);
+                _userService.UpdateUser(user);
                 return pc;
             }
             Console.WriteLine("Characters are full");
@@ -52,7 +52,7 @@ namespace WildShape_Sheets_API.Services
             var filter = Builders<User>.Filter.ElemMatch(user => user.Characters, nestedPc => nestedPc.Id == id);
             var update = Builders<User>.Update.PullFilter(user => user.Characters, pc => pc.Id == id);
             _dataBaseService.userCollection.UpdateOne(filter, update);
-            _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == pc.Id);
+            _dataBaseService.playerCharacterCollection.DeleteOne(pc => pc.Id == id);
 
         }
 

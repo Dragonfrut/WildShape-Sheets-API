@@ -15,14 +15,16 @@ namespace WildShape_Sheets_API.Services
     {
         private readonly DataBaseService _dataBaseService;
         private readonly UserService _userService;
+        private readonly HashService _hashService;
         private readonly TokenService _tokenService;
         private const int RefreshTokenExpiration = 60 * 12;
-        
 
-        public AuthService(UserService userService, DataBaseService dataBaseService, TokenService tokenService)
+        public AuthService(UserService userService, DataBaseService dataBaseService, AppSettings appSettings, HashService hashService, TokenService tokenService)
         {
             _dataBaseService = dataBaseService;
             _userService = userService;
+            _appSettings = appSettings;
+            _hashService = hashService; 
             _tokenService = tokenService;
         }
 
@@ -31,7 +33,10 @@ namespace WildShape_Sheets_API.Services
             var user = _dataBaseService.userCollection.Find(user => user.Email == email).SingleOrDefault();
 
             if (user != null && user.Password != null && user.Salt != null) {
-                if (_userService.VerifyPassword(password, user.Password, user.Salt)) {
+
+                if (_hashService.VerifyPasswordHash(password, user.Password, user.Salt)) {
+                    // Password is valid, proceed with successful login
+
                     Console.WriteLine("Login valid");
                 } else {
                     Console.WriteLine("Login invalid");
