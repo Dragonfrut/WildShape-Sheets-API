@@ -11,15 +11,17 @@ namespace WildShape_Sheets_API.Controllers {
     [ApiController]
     public class UserController : Controller {
 
+        private readonly IConfiguration _configuration;
         private readonly UserService _userService;
         private readonly EmailService _emailService;
         private readonly HashService _hashService;
 
-        public UserController(UserService userService, EmailService emailService, HashService hashService)
+        public UserController(UserService userService, EmailService emailService, HashService hashService, IConfiguration configuration)
         {
             _userService = userService;
             _emailService = emailService;
             _hashService = hashService;
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(_configuration));
         }
 
         [HttpGet]
