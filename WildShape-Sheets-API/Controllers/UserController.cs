@@ -45,19 +45,19 @@ namespace WildShape_Sheets_API.Controllers {
             _userService.DeleteUser(id);
         }
 
-        public class PasswordResetRequest
-        {
-            public string email { get; set; }
-            public PasswordResetRequest()
-            {
-                email = string.Empty;
-            }
-        }
+        //public class PasswordResetRequest
+        //{
+        //    public string email { get; set; }
+        //    public PasswordResetRequest()
+        //    {
+        //        email = string.Empty;
+        //    }
+        //}
 
         [AllowAnonymous]
         [HttpPost]
         [Route("password/reset")]
-        public ActionResult PasswordReset([FromBody] PasswordResetRequest passwordReset)
+        public ActionResult PasswordReset([FromBody] PasswordResetRequestDto passwordReset)
         {
             var user = _userService.GetUserByEmail(passwordReset.email);
             if (user == null)
