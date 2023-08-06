@@ -11,6 +11,7 @@ namespace WildShape_Sheets_API.Controllers {
     [ApiController]
     public class UserController : Controller {
 
+
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
         private readonly EmailService _emailService;
@@ -22,6 +23,7 @@ namespace WildShape_Sheets_API.Controllers {
             _emailService = emailService;
             _hashService = hashService;
             _configuration = configuration ?? throw new ArgumentNullException(nameof(_configuration));
+
         }
 
         [HttpGet]
@@ -69,9 +71,12 @@ namespace WildShape_Sheets_API.Controllers {
 
             // Prepare the email subject and body
             string subject = "Password Reset Request";
-            string body = "Hello password reset. This is the email body.";
+            string passwordResetToken = hashService.GetSHA256Hash(user.Password);
+            string frontEndUrl = configuration["URLs:Frontend"];
+            string body = String.Format("To reset you password please follow <a href=\"{0}?token={1}\">this link</a>", frontEndUrl, passwordResetToken);
 
             // Send the email using the email service
+
             _emailService.SendPasswordResetEmail(passwordReset.email, subject, body);
             string passwordResetToken = _hashService.GetSHA256Hash(user.Password);
 
@@ -86,6 +91,7 @@ namespace WildShape_Sheets_API.Controllers {
             };
 
             return Ok(responseObj);
+
 
         }
         //public class PasswordUpdateRequest

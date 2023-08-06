@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Reflection.Metadata;
 using WildShape_Sheets_API.Models;
 
 namespace WildShape_Sheets_API.Services
@@ -10,6 +11,7 @@ namespace WildShape_Sheets_API.Services
         private readonly DataBaseService _dataBaseService;
         private readonly IConfiguration _configuration;
         private readonly UserService _userService;
+        private const int MaxNumOfPlayerCharacters = 4;
 
         public PlayerCharacterService(IConfiguration configuration, DataBaseService dataBaseService, UserService userService)
         {
@@ -32,7 +34,7 @@ namespace WildShape_Sheets_API.Services
         public PlayerCharacter? CreatePlayerCharacter(string userEmail, PlayerCharacter pc)
         {
             var user = _userService.GetUserByEmail(userEmail);
-            if (user.Characters?.Count <= 4) {
+            if (user.Characters?.Count <= MaxNumOfPlayerCharacters) {
                 pc.User = user.Id;
                 _dataBaseService.playerCharacterCollection.InsertOne(pc);
                 user.Characters.Add(pc);

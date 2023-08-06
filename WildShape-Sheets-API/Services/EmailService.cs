@@ -16,7 +16,7 @@ namespace WildShape_Sheets_API.Services
             message.From.Add(new MailboxAddress("Wild Shape Sheets Password Services", "wildshapesheetsemail@gmail.com"));
             message.To.Add(new MailboxAddress("", toEmail)); // Use the recipient's email here
             message.Subject = subject;
-            message.Body = new TextPart("plain") { Text = body };
+            message.Body = new TextPart("html") { Text = body };
 
             using (var client = new SmtpClient())
             {
