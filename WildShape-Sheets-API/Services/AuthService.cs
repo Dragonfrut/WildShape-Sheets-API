@@ -27,14 +27,19 @@ namespace WildShape_Sheets_API.Services
         public  string? Authenticate(string email, string password)
         {
 
-            
-            var user = _dataBaseService.userCollection.Find(user => user.Email == email).FirstOrDefault();
+            if (!_userService.VerifyEmailExists(email)) {
+                Console.WriteLine("Login invalid");
+                return null;
 
+            }
+
+            var user = _dataBaseService.userCollection.Find(user => user.Email == email).FirstOrDefault();
+                        
             if (user != null && user.Password != null && user.Salt != null) {
                 if (_hashService.VerifyPasswordHash(password, user.Password, user.Salt)) {
                     // Password is valid, proceed with successful login
                     Console.WriteLine("Login valid");
-                } else {
+                } else{
                     Console.WriteLine("Login invalid");
                     return null;
                 }
