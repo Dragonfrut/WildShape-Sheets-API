@@ -17,6 +17,7 @@ namespace WildShape_Sheets_API.Services
         private readonly UserService _userService;
         private readonly HashService _hashService;
         private readonly TokenService _tokenService;
+        private readonly AppSettings _appSettings;
         private const int RefreshTokenExpiration = 60 * 12;
 
         public AuthService(UserService userService, DataBaseService dataBaseService, AppSettings appSettings, HashService hashService, TokenService tokenService)
