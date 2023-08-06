@@ -71,14 +71,14 @@ namespace WildShape_Sheets_API.Controllers {
 
             // Prepare the email subject and body
             string subject = "Password Reset Request";
-            string passwordResetToken = hashService.GetSHA256Hash(user.Password);
-            string frontEndUrl = configuration["URLs:Frontend"];
+            string passwordResetToken = _hashService.GetSHA256Hash(user.Password);
+            string frontEndUrl = _configuration["URLs:Frontend"];
             string body = String.Format("To reset you password please follow <a href=\"{0}?token={1}\">this link</a>", frontEndUrl, passwordResetToken);
 
             // Send the email using the email service
 
             _emailService.SendPasswordResetEmail(passwordReset.email, subject, body);
-            string passwordResetToken = _hashService.GetSHA256Hash(user.Password);
+            string _passwordResetToken = _hashService.GetSHA256Hash(user.Password);
 
             Console.WriteLine("Send the email");
             Console.WriteLine(passwordResetToken);
