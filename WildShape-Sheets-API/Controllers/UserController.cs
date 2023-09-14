@@ -16,12 +16,14 @@ namespace WildShape_Sheets_API.Controllers {
         private readonly UserService _userService;
         private readonly EmailService _emailService;
         private readonly HashService _hashService;
+        private readonly TokenService _tokenService;
 
-        public UserController(UserService userService, EmailService emailService, HashService hashService, IConfiguration configuration)
+        public UserController(UserService userService, EmailService emailService, HashService hashService, TokenService tokenService , IConfiguration configuration)
         {
             _userService = userService;
             _emailService = emailService;
             _hashService = hashService;
+            _tokenService = tokenService;
             _configuration = configuration ?? throw new ArgumentNullException(nameof(_configuration));
 
         }
@@ -39,6 +41,15 @@ namespace WildShape_Sheets_API.Controllers {
 
         [AllowAnonymous]
         [HttpPost]
+        [Route("token")]
+        public ActionResult<User> GetUserWithToken(string token) {
+            var claims = _tokenService.DecodeToken(token);
+            var user = _userService.GetUserByEmail(claims["Email"]);
+            return Json(user);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
         public ActionResult<User> CreateUser(User user) {
             _userService.CreateUser(user);
             return Json(user);
@@ -48,15 +59,6 @@ namespace WildShape_Sheets_API.Controllers {
         public void DeleteUser(string id) {
             _userService.DeleteUser(id);
         }
-
-        //public class PasswordResetRequest
-        //{
-        //    public string email { get; set; }
-        //    public PasswordResetRequest()
-        //    {
-        //        email = string.Empty;
-        //    }
-        //}
 
         [AllowAnonymous]
         [HttpPost]
@@ -94,12 +96,7 @@ namespace WildShape_Sheets_API.Controllers {
 
 
         }
-        //public class PasswordUpdateRequest
-        //{
-        //    public string email { get; set; }
-        //    public string token { get; set; }
-        //    public string password { get; set; }
-        //}
+  
 
         [AllowAnonymous]
         [HttpPost]
