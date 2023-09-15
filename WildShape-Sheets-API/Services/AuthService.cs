@@ -30,7 +30,7 @@ namespace WildShape_Sheets_API.Services
         }
 
 
-        public  string? Authenticate(string email, string password)
+        public  AuthTokens? Authenticate(string email, string password)
         {
 
             if (!_userService.VerifyEmailExists(email)) {
@@ -64,7 +64,7 @@ namespace WildShape_Sheets_API.Services
                 RefreshToken = refreshToken
             };
 
-            return JsonSerializer.Serialize(authTokens);
+            return authTokens;
         }
     }
 }

@@ -42,9 +42,9 @@ namespace WildShape_Sheets_API.Controllers {
         [AllowAnonymous]
         [HttpPost]
         [Route("token")]
-        public ActionResult<User> GetUserWithToken(string token) {
-            var claims = _tokenService.DecodeToken(token);
-            var user = _userService.GetUserByEmail(claims["Email"]);
+        public ActionResult<User> GetUserWithToken(AuthTokens tokens) {
+            var claims = _tokenService.DecodeToken(tokens);
+            var user = _userService.GetUserByEmail(claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"]);
             return Json(user);
         }
 
