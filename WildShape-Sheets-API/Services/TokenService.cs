@@ -39,9 +39,7 @@ namespace WildShape_Sheets_API.Services {
         }
 
         internal Dictionary<string, string> DecodeToken(AuthTokens tokens) {
-            Console.WriteLine(tokens.ToString());
             var accessToken = tokens.AccessToken;
-            Console.WriteLine(accessToken);
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(accessToken);
 

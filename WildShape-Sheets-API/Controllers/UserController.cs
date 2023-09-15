@@ -3,6 +3,7 @@ using WildShape_Sheets_API.Models;
 using WildShape_Sheets_API.Services;
 using Microsoft.AspNetCore.Authorization;
 using WildShape_Sheets_API.DTO;
+using static System.Net.WebRequestMethods;
 
 namespace WildShape_Sheets_API.Controllers {
 
@@ -17,6 +18,7 @@ namespace WildShape_Sheets_API.Controllers {
         private readonly EmailService _emailService;
         private readonly HashService _hashService;
         private readonly TokenService _tokenService;
+        private readonly string _emailKey;
 
         public UserController(UserService userService, EmailService emailService, HashService hashService, TokenService tokenService , IConfiguration configuration)
         {
@@ -24,6 +26,7 @@ namespace WildShape_Sheets_API.Controllers {
             _emailService = emailService;
             _hashService = hashService;
             _tokenService = tokenService;
+            _emailKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
             _configuration = configuration ?? throw new ArgumentNullException(nameof(_configuration));
 
         }
@@ -44,7 +47,7 @@ namespace WildShape_Sheets_API.Controllers {
         [Route("token")]
         public ActionResult<User> GetUserWithToken(AuthTokens tokens) {
             var claims = _tokenService.DecodeToken(tokens);
-            var user = _userService.GetUserByEmail(claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"]);
+            var user = _userService.GetUserByEmail(claims[_emailKey]);
             return Json(user);
         }
 
