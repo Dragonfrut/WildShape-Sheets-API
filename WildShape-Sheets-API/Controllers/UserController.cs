@@ -3,6 +3,7 @@ using WildShape_Sheets_API.Models;
 using WildShape_Sheets_API.Services;
 using Microsoft.AspNetCore.Authorization;
 using WildShape_Sheets_API.DTO;
+using static System.Net.WebRequestMethods;
 
 namespace WildShape_Sheets_API.Controllers {
 
@@ -16,12 +17,16 @@ namespace WildShape_Sheets_API.Controllers {
         private readonly UserService _userService;
         private readonly EmailService _emailService;
         private readonly HashService _hashService;
+        private readonly TokenService _tokenService;
+        private readonly string _emailKey;
 
-        public UserController(UserService userService, EmailService emailService, HashService hashService, IConfiguration configuration)
+        public UserController(UserService userService, EmailService emailService, HashService hashService, TokenService tokenService , IConfiguration configuration)
         {
             _userService = userService;
             _emailService = emailService;
             _hashService = hashService;
+            _tokenService = tokenService;
+            _emailKey = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
             _configuration = configuration ?? throw new ArgumentNullException(nameof(_configuration));
 
         }
@@ -39,6 +44,15 @@ namespace WildShape_Sheets_API.Controllers {
 
         [AllowAnonymous]
         [HttpPost]
+        [Route("token")]
+        public ActionResult<User> GetUserWithToken(AuthTokens tokens) {
+            var claims = _tokenService.DecodeToken(tokens);
+            var user = _userService.GetUserByEmail(claims[_emailKey]);
+            return Json(user);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
         public ActionResult<User> CreateUser(User user) {
             _userService.CreateUser(user);
             return Json(user);
@@ -48,15 +62,6 @@ namespace WildShape_Sheets_API.Controllers {
         public void DeleteUser(string id) {
             _userService.DeleteUser(id);
         }
-
-        //public class PasswordResetRequest
-        //{
-        //    public string email { get; set; }
-        //    public PasswordResetRequest()
-        //    {
-        //        email = string.Empty;
-        //    }
-        //}
 
         [AllowAnonymous]
         [HttpPost]
@@ -94,12 +99,7 @@ namespace WildShape_Sheets_API.Controllers {
 
 
         }
-        //public class PasswordUpdateRequest
-        //{
-        //    public string email { get; set; }
-        //    public string token { get; set; }
-        //    public string password { get; set; }
-        //}
+  
 
         [AllowAnonymous]
         [HttpPost]

@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text;
 using WildShape_Sheets_API.Models;
 using MongoDB.Driver;
+using System.Collections.Generic;
 
 namespace WildShape_Sheets_API.Services {
     public class TokenService {
@@ -37,7 +38,23 @@ namespace WildShape_Sheets_API.Services {
             return jwt;
         }
 
-        internal string GenerateRefreshToken(int expirationMinutes, User user) {
+        internal Dictionary<string, string> DecodeToken(AuthTokens tokens) {
+            var accessToken = tokens.AccessToken;
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(accessToken);
+
+            Dictionary<string, string> claims = new Dictionary<string, string>();
+
+            foreach (var claim in jwtToken.Claims) {
+                claims.Add(claim.Type, claim.Value);
+            }
+
+            return claims;
+        }
+    
+
+
+internal string GenerateRefreshToken(int expirationMinutes, User user) {
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create()) {
                 rng.GetBytes(randomNumber);
