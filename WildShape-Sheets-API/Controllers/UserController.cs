@@ -48,7 +48,8 @@ namespace WildShape_Sheets_API.Controllers {
         public ActionResult<User> GetUserWithToken(AuthTokens tokens) {
             var claims = _tokenService.DecodeToken(tokens);
             var user = _userService.GetUserByEmail(claims[_emailKey]);
-            return Json(user);
+            UserDto userDto = new UserDto(user.Email,user.Username);
+            return Json(userDto);
         }
 
         [AllowAnonymous]
